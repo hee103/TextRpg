@@ -49,7 +49,19 @@
             public string ItemName { get; set; }
             public string ItemExplanation { get; set; }
             public int Attack { get; set; }
+            public int Defense { get; set; }
+            public int Price { get; set; }
+            public bool Buy { get; set; }
 
+            public Item(string itemName, string itemExplanation, int attack, int defense, int price) // 아이템 클래스 생성자
+            {
+                ItemName = itemName;
+                ItemExplanation = itemExplanation;
+                Attack = attack;
+                Defense = defense;
+                Price = price;
+                Buy = false;
+            }
 
         }
 
