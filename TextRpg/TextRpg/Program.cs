@@ -33,7 +33,7 @@
             public Character(string name)
             {
                 Name = name;
-                Level = 01;
+                Level = 1;
                 Attack = 10;
                 Health = 100;
                 Defense = 0;
