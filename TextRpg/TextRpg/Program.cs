@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Numerics;
+    using System.Security.Authentication;
     using static TextRpg.Program;
 
     internal class Program
@@ -33,7 +35,7 @@
                 Name = name;
                 Level = 01;
                 Attack = 10;
-                Health = 50;
+                Health = 100;
                 Defense = 0;
                 Gold = 1500;
             }
@@ -45,7 +47,7 @@
                 Console.WriteLine($"Chad: {Name}");
                 Console.WriteLine($"공격력: {Attack}");
                 Console.WriteLine($"체력: {Health}");
-                Console.WriteLine($"체력: {Defense}");
+                Console.WriteLine($"방어력: {Defense}");
                 Console.WriteLine($"Gold: {Gold}G");
         
             }
@@ -91,6 +93,7 @@
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 휴식하기");
+            Console.WriteLine("5. 던전입장");    
             Console.WriteLine("원하시는 행동을 입력해주세요.");
 
             bool isValid = false;
@@ -99,7 +102,7 @@
                 Console.Write(">>>");
                 int userChoice;
                 
-                if (int.TryParse(Console.ReadLine(), out userChoice) && userChoice > 0 && userChoice < 5)
+                if (int.TryParse(Console.ReadLine(), out userChoice) && userChoice > 0 && userChoice < 6)
                 {
                     switch (userChoice)
                     {
@@ -117,6 +120,10 @@
 
                         case 4:
                             Rest(player);
+                            break;
+
+                        case 5:
+                            Dungeon(player);
                             break;
                     }
                     isValid = true;
@@ -337,12 +344,14 @@
                 if (int.TryParse(Console.ReadLine(), out nextAction) && nextAction == 0)
                 {
                     buying = false;
-                    Shop(player);
+                    ChoiceNumber(player);
                 }
             }
 
         }
 
+
+        //휴식하기
         static void Rest(Character player)
         {
             Console.WriteLine($"500G를 지불하면 체력을 100까지 회복할 수 있습니다. (보유 골드: {player.Gold}G)");
@@ -384,6 +393,189 @@
                         ChoiceNumber(player);
                     }
                 }
+            }
+        }
+
+
+        //던전 입장
+        static void Dungeon(Character player)
+        {
+            bool dungeonSelect = false;
+            Random random = new Random();
+
+            while (!dungeonSelect)
+            {
+                Console.WriteLine("\n0. 나가기 \n1. Easy | 방어력 5 이상 권장\n2. Normal | 방어력 10 이상 권장\n3. Hard | 방어력 20 이상 권장 ");
+
+                int dungeonLevel;
+                if (int.TryParse(Console.ReadLine(), out dungeonLevel) && dungeonLevel < 4)
+                {
+                    switch (dungeonLevel)
+                    {
+                        case 0:
+                            ChoiceNumber(player);
+                            break;
+                        case 1:
+                            if (player.Defense >= 5)
+                            {
+                                Console.WriteLine("던전 성공!");
+                                EasyDungeonLevle(player);
+                            }
+                            else
+                            {
+                                int chance = random.Next(0, 100);
+                                if (chance < 40)
+                                {
+                                    Console.WriteLine("던전 실패!");
+                                    player.Health /= 2;
+                                    Console.WriteLine($"현재체력: {player.Health}");
+                                    if (player.Health <= 0) Dead(player); 
+                                }
+                                else
+                                {
+                                    Console.WriteLine("던전 성공!");
+                                    EasyDungeonLevle(player);
+                                }
+                            }
+                            break;
+                        case 2:
+                            if (player.Defense >= 10)
+                            {
+                                Console.WriteLine("던전 성공!");
+                                NormalDungeonLevle(player);
+                            }
+                            else
+                            {
+                                int chance = random.Next(0, 100);
+                                if (chance < 50)
+                                {
+                                    Console.WriteLine("던전 실패!");
+                                    player.Health /= 2;
+                                    Console.WriteLine($"현재체력: {player.Health}");
+                                    if (player.Health <= 0) Dead(player); 
+                                }
+                                else
+                                {
+                                    Console.WriteLine("던전 성공!");
+                                    NormalDungeonLevle(player);
+                                }
+                            }
+                            break;
+                        case 3:
+                            if (player.Defense >= 25)
+                            {
+                                Console.WriteLine("던전 성공!");
+                                HardDungeonLevle(player);
+                            }
+                            else
+                            {
+                                int chance = random.Next(0, 100);
+                                if (chance < 60)
+                                {
+                                    Console.WriteLine("던전 실패!");
+                                    player.Health /= 2;
+                                    Console.WriteLine($"현재체력: {player.Health}");
+                                    if (player.Health <= 0) Dead(player); 
+                                }
+                                else
+                                {
+                                    Console.WriteLine("던전 성공!");
+                                    HardDungeonLevle(player);
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+        }
+
+
+        static void EasyDungeonLevle(Character player)
+        {
+            if (player.Health > 0)
+            {
+                Random random = new Random();
+                int dungeonDamage = random.Next(20, 36);
+                int result = player.Health - (dungeonDamage + (5 - player.Defense));
+
+                int rewardGold = (int)(1000 + (1000 * (player.Attack * 2 / 100.0)));
+
+                Console.WriteLine("축하합니다!! 쉬운 던전을 클리어 하였습니다.");
+                Console.WriteLine("[탐험 결과]");
+                Console.WriteLine($"체력{player.Health} -> {result}");
+                player.Health = result;
+
+                if (player.Health <= 0)
+                {
+                    Dead(player); 
+                }
+                else
+                {
+                    Console.WriteLine($"{player.Gold} -> {player.Gold + rewardGold}");
+                    player.Gold += rewardGold;
+                }
+            }
+            else
+            {
+                Dead(player); 
+            }
+        }
+
+        static void NormalDungeonLevle(Character player)
+        {
+            Random random = new Random();
+            int dungeonDamage = random.Next(20, 36);
+            int result = player.Health - (dungeonDamage + (10 - player.Defense));
+
+            int rewardGold = (int)(1700 + (1700 * (player.Attack * 2 / 100.0)));
+
+            player.Health = result;
+
+            if (player.Health <= 0)
+            {
+                Dead(player); 
+            }
+            else
+            {
+                Console.WriteLine("축하합니다!! 일반 던전을 클리어 하였습니다.");
+                Console.WriteLine("[탐험 결과]");
+                Console.WriteLine($"체력{player.Health} -> {result}");
+                Console.WriteLine($"{player.Gold} -> {player.Gold + rewardGold}");
+                player.Gold += rewardGold;
+            }
+        }
+
+        static void HardDungeonLevle(Character player)
+        {
+            Random random = new Random();
+            int dungeonDamage = random.Next(20, 36);
+            int result = player.Health - (dungeonDamage + (20 - player.Defense));
+
+            player.Health = result;
+
+            if (player.Health <= 0)
+            {
+                Dead(player); 
+            }
+            else
+            {
+                int rewardGold = (int)(2500 + (2500 * (player.Attack * 2 / 100.0)));
+
+                Console.WriteLine("축하합니다!! 어려운 던전을 클리어 하였습니다.");
+                Console.WriteLine("[탐험 결과]");
+                Console.WriteLine($"체력{player.Health} -> {result}");
+                Console.WriteLine($"{player.Gold} -> {player.Gold + rewardGold}");
+                player.Gold += rewardGold;
+            }
+        }
+
+        static void Dead(Character player)
+        {
+            if (player.Health <= 0)
+            {
+                Console.Clear();
+                Console.WriteLine("사망");
+                Environment.Exit(0); 
             }
         }
 
