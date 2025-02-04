@@ -13,7 +13,7 @@
         {
             int Level { get; set; }
             string Name { get; }
-            int Attack { get; set; }
+            float Attack { get; set; }
             int Health { get; set; }
             int Defense { get; set; }
             int Gold { get; set; }
@@ -25,7 +25,7 @@
         {
             public int Level { get; set; }
             public string Name { get; }
-            public int Attack { get; set; }
+            public float Attack { get; set; }
             public int Health { get; set; }
             public int Defense { get; set; }
             public int Gold { get; set; }
@@ -402,10 +402,10 @@
         {
             bool dungeonSelect = false;
             Random random = new Random();
-
+            int successcount = 0;
             while (!dungeonSelect)
             {
-                Console.WriteLine("\n0. 나가기 \n1. Easy | 방어력 5 이상 권장\n2. Normal | 방어력 10 이상 권장\n3. Hard | 방어력 20 이상 권장 ");
+                Console.WriteLine("\n0. 나가기 \n1. Easy | 방어력 5 이상 권장\n2. Normal | 방어력 20 이상 권장\n3. Hard | 방어력 35 이상 권장 ");
 
                 int dungeonLevel;
                 if (int.TryParse(Console.ReadLine(), out dungeonLevel) && dungeonLevel < 4)
@@ -420,6 +420,7 @@
                             {
                                 Console.WriteLine("던전 성공!");
                                 EasyDungeonLevle(player);
+                                successcount++;
                             }
                             else
                             {
@@ -435,6 +436,7 @@
                                 {
                                     Console.WriteLine("던전 성공!");
                                     EasyDungeonLevle(player);
+                                    successcount++;
                                 }
                             }
                             break;
@@ -443,6 +445,7 @@
                             {
                                 Console.WriteLine("던전 성공!");
                                 NormalDungeonLevle(player);
+                                successcount++;
                             }
                             else
                             {
@@ -458,6 +461,8 @@
                                 {
                                     Console.WriteLine("던전 성공!");
                                     NormalDungeonLevle(player);
+                                    successcount++;
+                                        
                                 }
                             }
                             break;
@@ -466,6 +471,7 @@
                             {
                                 Console.WriteLine("던전 성공!");
                                 HardDungeonLevle(player);
+                                successcount++;
                             }
                             else
                             {
@@ -481,11 +487,13 @@
                                 {
                                     Console.WriteLine("던전 성공!");
                                     HardDungeonLevle(player);
+                                    successcount++;
                                 }
                             }
                             break;
                     }
                 }
+                LevelUP(player, successcount);
             }
         }
 
@@ -525,7 +533,7 @@
         {
             Random random = new Random();
             int dungeonDamage = random.Next(20, 36);
-            int result = player.Health - (dungeonDamage + (10 - player.Defense));
+            int result = player.Health - (dungeonDamage + (20 - player.Defense));
 
             int rewardGold = (int)(1700 + (1700 * (player.Attack * 2 / 100.0)));
 
@@ -549,7 +557,7 @@
         {
             Random random = new Random();
             int dungeonDamage = random.Next(20, 36);
-            int result = player.Health - (dungeonDamage + (20 - player.Defense));
+            int result = player.Health - (dungeonDamage + (35 - player.Defense));
 
             player.Health = result;
 
@@ -577,6 +585,35 @@
                 Console.WriteLine("사망");
                 Environment.Exit(0); 
             }
+        }
+
+
+        static void LevelUP(Character player, int successcount)
+        {
+            switch(successcount)
+            {
+                case 1:
+                    player.Level = 2;
+                    player.Attack += 0.5f;
+                    player.Defense += 1;
+                    break;
+                case 2:
+                    player.Level = 3;
+                    player.Attack += 0.5f;
+                    player.Defense += 1;
+                    break;
+                case 3:
+                    player.Level = 3;
+                    player.Attack += 0.5f;
+                    player.Defense += 1;
+                    break;
+                case 4:
+                    player.Level = 5;
+                    player.Attack += 0.5f;
+                    player.Defense += 1;
+                    break;
+            }
+             
         }
 
 
