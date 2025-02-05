@@ -262,8 +262,8 @@
             Console.WriteLine(" 원하시는 행동을 입력해주세요.\n");
             Console.WriteLine(" 0. 나가기\n 1. 아이템 구매\n");
 
-            bool store = false;
-            while (!store)
+            bool shopSelect = false;
+            while (!shopSelect)
             {
                 Console.Write(">>>");
                 int storeInput = int.Parse(Console.ReadLine());
@@ -274,11 +274,11 @@
                     {
                         case 0:
                             ChoiceNumber(player);
-                            store = true;
+                            shopSelect = true;
                             break;
                         case 1:
                             BuyItem(player);
-                            store = true;
+                            shopSelect = true;
                             break;
 
                     }
