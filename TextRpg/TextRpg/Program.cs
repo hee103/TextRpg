@@ -426,13 +426,13 @@
                             }
                             else
                             {
-                                int chance = random.Next(0, 100);
-                                if (chance < 40)
+                                int chance = random.Next(0, 100); // 0부터 99까지 랜덤 생성
+                                if (chance < 40) // 40퍼센트의 확률이므로 40보다 작을 경우 던전 실패
                                 {
                                     Console.WriteLine("던전 실패!");
                                     player.Health /= 2;
                                     Console.WriteLine($"현재체력: {player.Health}");
-                                    if (player.Health <= 0) Dead(player); 
+                                    if (player.Health <= 0) Dead(player); // 플레이어의 체력이 0이하가 되면 Dead
                                 }
                                 else
                                 {
@@ -505,10 +505,10 @@
             if (player.Health > 0)
             {
                 Random random = new Random();
-                int dungeonDamage = random.Next(20, 36);
-                int result = player.Health - (dungeonDamage + (5 - player.Defense));
+                int dungeonDamage = random.Next(20, 36); // 데미지를 20~35까지 랜덤 생성
+                int result = player.Health - (dungeonDamage + (5 - player.Defense)); // 체력 계산
 
-                int rewardGold = (int)(1000 + (1000 * (player.Attack * 2 / 100.0)));
+                int rewardGold = (int)(1000 + (1000 * (player.Attack * 2 / 100.0))); // 던전 보상 계산
 
                 Console.WriteLine("축하합니다!! 쉬운 던전을 클리어 하였습니다.");
                 Console.WriteLine("[탐험 결과]");
@@ -583,10 +583,10 @@
         {
             if (player.Health <= 0)
             {
-                Console.Clear();
+                Console.Clear(); // 콘솔창 지움
                 Console.WriteLine($"{player.Name}께서는 사망하셨습니다.");
                 Console.WriteLine("- Game Over -");
-                Environment.Exit(0); 
+                Environment.Exit(0); // 종료
             }
         }
 
