@@ -89,16 +89,18 @@
        // 초기 선택 화면
         static void ChoiceNumber(Character player)
         {
+            Console.WriteLine("\n -- 로비 -- ");
             Console.WriteLine("1. 상태 보기");
             Console.WriteLine("2. 인벤토리");
             Console.WriteLine("3. 상점");
             Console.WriteLine("4. 휴식하기");
             Console.WriteLine("5. 던전입장");    
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            Console.WriteLine("\n원하시는 행동을 입력해주세요.");
 
             bool isValid = false;
             while (!isValid)
             {
+                Console.WriteLine(" ");
                 Console.Write(">>>");
                 int userChoice;
                 
@@ -110,7 +112,6 @@
                             PlayerInfo(player);
                             break;
                         case 2:
-                            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
                             Inventory(player);
                             
                             break;
@@ -140,13 +141,17 @@
         // 플레이어 정보
         static void PlayerInfo(ICharacter player)
         {
+            Console.WriteLine("\n-- 상태 보기 --");
             player.ShowInfo();
+            
+            Console.WriteLine("\n원하시는 행동을 입력해주세요.");
             Console.WriteLine("\n0. 나가기");
-            Console.WriteLine("원하시는 행동을 입력해주세요.");
+            
 
             bool exit = false;
             while (!exit)
             {
+                Console.WriteLine(" ");
                 Console.Write(">>>");
                 int userChoice;
                 if (int.TryParse(Console.ReadLine(), out userChoice) && userChoice == 0)
@@ -169,14 +174,21 @@
 
         static void Inventory(Character player)
         {
-            Console.WriteLine("보유 중인 아이템을 관리할 수 있습니다.");
+            Console.WriteLine("\n-- 인벤토리 --");
 
             Console.WriteLine("\n[ 아이템 목록 ]");
-            for (int i = 0; i < purchasedItems.Count; i++)
+            if (purchasedItems.Count == 0)
             {
-                bool isEquipped = equippedItems.Any(item => item.ItemName == purchasedItems[i].ItemName);// Any()메서드를 사용하여 equippedItem리스트에 아이템이 존재하는지 검사
-                string equippedMark = isEquipped ? "[E] " : "";
-                Console.WriteLine($"{i + 1}. {equippedMark}{purchasedItems[i].ItemName} | {purchasedItems[i].ItemExplanation}");
+                Console.WriteLine("아이템이 없습니다.");
+            }
+            else
+            {
+                for (int i = 0; i < purchasedItems.Count; i++)
+                {
+                    bool isEquipped = equippedItems.Any(item => item.ItemName == purchasedItems[i].ItemName);  // Any()메서드를 사용하여 equippedItem리스트에 아이템이 존재하는지 검사
+                    string equippedMark = isEquipped ? "[E] " : "";
+                    Console.WriteLine($"{i + 1}. {equippedMark}{purchasedItems[i].ItemName} | {purchasedItems[i].ItemExplanation}");
+                }
             }
 
             Console.WriteLine("\n1. 장착 관리");
@@ -189,7 +201,15 @@
                 switch (action)
                 {
                     case 1:
-                        ManageEquipment(player);
+                        if (purchasedItems.Count > 0) // 아이템이 있을 때만 실행
+                        {
+                            ManageEquipment(player);
+                        }
+                        else
+                        {
+                            Console.WriteLine("\n구매한 아이템이 없습니다.");
+                            Inventory(player);
+                        }
                         break;
                     case 0:
                         ChoiceNumber(player);
@@ -200,6 +220,7 @@
                 }
             }
         }
+
 
         static void ManageEquipment(Character player)
         {
@@ -213,7 +234,7 @@
                 Console.WriteLine($"{i + 1}. {equippedMark}{purchasedItems[i].ItemName} | {purchasedItems[i].ItemExplanation}");
             }
 
-            Console.WriteLine("0. 나가기");
+            //Console.WriteLine("0. 나가기");
             Console.Write(">> ");
 
             int choice;
@@ -250,9 +271,10 @@
         // 상점
         static void Shop(Character player)
         {
+            Console.WriteLine("\n-- 상점 --");
             Console.WriteLine($"현재 보유 골드: {player.Gold}G");
 
-            Console.WriteLine("[ 아이템 목록 ]");
+            Console.WriteLine("\n[ 아이템 목록 ]");
             for (int i = 0; i < items.Count; i++) // 아이템 리스트에 있는 모든 아이템 출력
             {
                 Console.WriteLine($"- {items[i].ItemName} | {items[i].ItemExplanation} | {items[i].Price}G{(items[i].Buy ? " - 구매 완료" : "")}"); 
@@ -296,7 +318,7 @@
         static void BuyItem(Character player)
         {
 
-            Console.WriteLine("[ 아이템 목록 ]");
+            Console.WriteLine("\n[ 아이템 목록 ]");
             for (int i = 0; i < items.Count; i++) // 아이템 리스트 순회
             {
                 Console.WriteLine($"{i + 1}. {items[i].ItemName} | {items[i].ItemExplanation} | {items[i].Price}G{(items[i].Buy ? " - 구매 완료" : "")}");
@@ -356,7 +378,8 @@
         //휴식하기
         static void Rest(Character player)
         {
-            Console.WriteLine($"500G를 지불하면 체력을 100까지 회복할 수 있습니다. (보유 골드: {player.Gold}G)");
+            Console.WriteLine("\n-- 휴식 --");
+            Console.WriteLine($"\n500G를 지불하면 체력을 100까지 회복할 수 있습니다. (보유 골드: {player.Gold}G)");
 
             bool restSelect = false;
 
@@ -408,7 +431,7 @@
             while (!dungeonSelect)
             {
                 Console.WriteLine("\n0. 나가기 \n1. Easy | 방어력 5 이상 권장\n2. Normal | 방어력 20 이상 권장\n3. Hard | 방어력 35 이상 권장 ");
-
+                Console.Write("\n>>>");
                 int dungeonLevel;
                 if (int.TryParse(Console.ReadLine(), out dungeonLevel) && dungeonLevel < 4)
                 {
@@ -420,7 +443,7 @@
                         case 1:
                             if (player.Defense >= 5)
                             {
-                                Console.WriteLine("던전 성공!");
+                                Console.WriteLine("\n[던전 성공!]");
                                 EasyDungeonLevle(player);
                                 successcount++;
                             }
@@ -429,14 +452,14 @@
                                 int chance = random.Next(0, 100); // 0부터 99까지 랜덤 생성
                                 if (chance < 40) // 40퍼센트의 확률이므로 40보다 작을 경우 던전 실패
                                 {
-                                    Console.WriteLine("던전 실패!");
+                                    Console.WriteLine("\n[던전 실패!]");
                                     player.Health /= 2;
                                     Console.WriteLine($"현재체력: {player.Health}");
                                     if (player.Health <= 0) Dead(player); // 플레이어의 체력이 0이하가 되면 Dead
                                 }
                                 else
                                 {
-                                    Console.WriteLine("던전 성공!");
+                                    Console.WriteLine("\n[던전 성공!]");
                                     EasyDungeonLevle(player);
                                     successcount++;
                                 }
@@ -445,7 +468,7 @@
                         case 2:
                             if (player.Defense >= 10)
                             {
-                                Console.WriteLine("던전 성공!");
+                                Console.WriteLine("\n[던전 성공!]");
                                 NormalDungeonLevle(player);
                                 successcount++;
                             }
@@ -454,14 +477,14 @@
                                 int chance = random.Next(0, 100);
                                 if (chance < 50)
                                 {
-                                    Console.WriteLine("던전 실패!");
+                                    Console.WriteLine("\n[던전 실패!]");
                                     player.Health /= 2;
                                     Console.WriteLine($"현재체력: {player.Health}");
                                     if (player.Health <= 0) Dead(player); 
                                 }
                                 else
                                 {
-                                    Console.WriteLine("던전 성공!");
+                                    Console.WriteLine("\n[던전 성공!]");
                                     NormalDungeonLevle(player);
                                     successcount++;
                                         
@@ -471,7 +494,7 @@
                         case 3:
                             if (player.Defense >= 25)
                             {
-                                Console.WriteLine("던전 성공!");
+                                Console.WriteLine("\n[던전 성공!]");
                                 HardDungeonLevle(player);
                                 successcount++;
                             }
@@ -480,14 +503,14 @@
                                 int chance = random.Next(0, 100);
                                 if (chance < 60)
                                 {
-                                    Console.WriteLine("던전 실패!");
+                                    Console.WriteLine("\n[던전 실패!]");
                                     player.Health /= 2;
                                     Console.WriteLine($"현재체력: {player.Health}");
                                     if (player.Health <= 0) Dead(player); 
                                 }
                                 else
                                 {
-                                    Console.WriteLine("던전 성공!");
+                                    Console.WriteLine("\n[던전 성공!]");
                                     HardDungeonLevle(player);
                                     successcount++;
                                 }
@@ -510,7 +533,7 @@
 
                 int rewardGold = (int)(1000 + (1000 * (player.Attack * 2 / 100.0))); // 던전 보상 계산
 
-                Console.WriteLine("축하합니다!! 쉬운 던전을 클리어 하였습니다.");
+                Console.WriteLine("<축하합니다!! 쉬운 던전을 클리어 하였습니다.>");
                 Console.WriteLine("[탐험 결과]");
                 Console.WriteLine($"체력{player.Health} -> {result}");
                 player.Health = result;
@@ -547,7 +570,7 @@
             }
             else
             {
-                Console.WriteLine("축하합니다!! 일반 던전을 클리어 하였습니다.");
+                Console.WriteLine("<축하합니다!! 일반 던전을 클리어 하였습니다.>");
                 Console.WriteLine("[탐험 결과]");
                 Console.WriteLine($"체력{player.Health} -> {result}");
                 Console.WriteLine($"{player.Gold} -> {player.Gold + rewardGold}");
@@ -571,7 +594,7 @@
             {
                 int rewardGold = (int)(2500 + (2500 * (player.Attack * 2 / 100.0)));
 
-                Console.WriteLine("축하합니다!! 어려운 던전을 클리어 하였습니다.");
+                Console.WriteLine("<축하합니다!! 어려운 던전을 클리어 하였습니다.>");
                 Console.WriteLine("[탐험 결과]");
                 Console.WriteLine($"체력{player.Health} -> {result}");
                 Console.WriteLine($"{player.Gold} -> {player.Gold + rewardGold}");
