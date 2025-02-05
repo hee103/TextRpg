@@ -165,7 +165,7 @@
 
 
         //인벤토리
-        static List<Item> equippedItems = new List<Item>();
+        static List<Item> equippedItems = new List<Item>(); // 장착된 아이템 목록을 저장
 
         static void Inventory(Character player)
         {
@@ -174,7 +174,7 @@
             Console.WriteLine("\n[ 아이템 목록 ]");
             for (int i = 0; i < purchasedItems.Count; i++)
             {
-                bool isEquipped = equippedItems.Any(item => item.ItemName == purchasedItems[i].ItemName);
+                bool isEquipped = equippedItems.Any(item => item.ItemName == purchasedItems[i].ItemName);// Any()메서드를 사용하여 equippedItem리스트에 아이템이 존재하는지 검사
                 string equippedMark = isEquipped ? "[E] " : "";
                 Console.WriteLine($"{i + 1}. {equippedMark}{purchasedItems[i].ItemName} | {purchasedItems[i].ItemExplanation}");
             }
@@ -203,13 +203,13 @@
 
         static void ManageEquipment(Character player)
         {
-            Console.WriteLine("** 장착 관리 **");
+            Console.WriteLine("-- 장착 관리 --");
 
             Console.WriteLine("\n[ 아이템 목록 ]");
-            for (int i = 0; i < purchasedItems.Count; i++)
+            for (int i = 0; i < purchasedItems.Count; i++) // 플레이어가 구매한 아이템 목록 순회
             {
-                bool isEquipped = equippedItems.Any(item => item.ItemName == purchasedItems[i].ItemName);
-                string equippedMark = isEquipped ? "[E] " : "";
+                bool isEquipped = equippedItems.Any(item => item.ItemName == purchasedItems[i].ItemName);  //아이템이 장착된 상태인지 확인
+                string equippedMark = isEquipped ? "[E] " : ""; //장착된 아이템이라면 [E]표시 출력
                 Console.WriteLine($"{i + 1}. {equippedMark}{purchasedItems[i].ItemName} | {purchasedItems[i].ItemExplanation}");
             }
 
@@ -224,8 +224,8 @@
                 bool isEquipped = equippedItems.Any(item => item.ItemName == selectedItem.ItemName);
                 if (isEquipped)
                 {
-                    equippedItems.RemoveAll(item => item.ItemName == selectedItem.ItemName);
-                    player.Attack -= selectedItem.Attack;
+                    equippedItems.RemoveAll(item => item.ItemName == selectedItem.ItemName); // 이미 장착된 아이템이면 equippedItems에서 제거
+                    player.Attack -= selectedItem.Attack; // 능력 감소
                     player.Defense -= selectedItem.Defense;
                     Console.WriteLine($"{selectedItem.ItemName}을(를) 장착 해제했습니다.");
                 }
@@ -236,7 +236,7 @@
                     player.Defense += selectedItem.Defense;
                     Console.WriteLine($"{selectedItem.ItemName}을(를) 장착했습니다.");
                 }
-                Inventory(player);
+                Inventory(player); // 변경된 사항 반영된 인벤토리 다시 출력
             }
             else
             {
@@ -244,7 +244,7 @@
             }
         }
 
-
+       
 
 
         // 상점
@@ -253,9 +253,9 @@
             Console.WriteLine($"현재 보유 골드: {player.Gold}G");
 
             Console.WriteLine("[ 아이템 목록 ]");
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++) // 아이템 리스트에 있는 모든 아이템 출력
             {
-                Console.WriteLine($"- {items[i].ItemName} | {items[i].ItemExplanation} | {items[i].Price}G{(items[i].Buy ? " - 구매 완료" : "")}");
+                Console.WriteLine($"- {items[i].ItemName} | {items[i].ItemExplanation} | {items[i].Price}G{(items[i].Buy ? " - 구매 완료" : "")}"); 
             }
 
             Console.WriteLine();
@@ -290,12 +290,14 @@
 
             }
         }
-        static List<Item> purchasedItems = new List<Item>();
+
+
+        static List<Item> purchasedItems = new List<Item>(); // 플레이어가 구매한 아이템을 저장하는 리스트
         static void BuyItem(Character player)
         {
 
             Console.WriteLine("[ 아이템 목록 ]");
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < items.Count; i++) // 아이템 리스트 순회
             {
                 Console.WriteLine($"{i + 1}. {items[i].ItemName} | {items[i].ItemExplanation} | {items[i].Price}G{(items[i].Buy ? " - 구매 완료" : "")}");
             }
@@ -309,7 +311,7 @@
                 {
                     Item selectedItem = items[buyItem - 1];
 
-                    if (selectedItem.Buy)
+                    if (selectedItem.Buy) 
                     {
                         Console.WriteLine("이미 구매한 아이템입니다!");
                     }
@@ -317,7 +319,7 @@
                     {
                         player.Gold -= selectedItem.Price;
                         selectedItem.Buy = true;
-                        purchasedItems.Add(selectedItem);
+                        purchasedItems.Add(selectedItem); // 아이템을 구매하면 purchasedItems 리스트에 저장
                         Console.WriteLine($"{selectedItem.ItemName}을(를) 구매했습니다! 남은 골드: {player.Gold}G");
 
                     }
@@ -330,7 +332,7 @@
                     Console.WriteLine("\n[ 아이템 목록 ]");
                     for (int i = 0; i < items.Count; i++)
                     {
-                        Console.WriteLine($"{i + 1}. {items[i].ItemName} | {items[i].ItemExplanation} | {items[i].Price}G{(items[i].Buy ? " - 구매 완료" : "")}");
+                        Console.WriteLine($"{i + 1}. {items[i].ItemName} | {items[i].ItemExplanation} | {items[i].Price}G{(items[i].Buy ? " - 구매 완료" : "")}"); // 구매한 아이템 옆엔 구매완료가 출력
                     }
                 }
                 else
@@ -344,7 +346,7 @@
                 if (int.TryParse(Console.ReadLine(), out nextAction) && nextAction == 0)
                 {
                     buying = false;
-                    ChoiceNumber(player);
+                    ChoiceNumber(player); // 0을 누르면 초기 선택 화면으로 돌아감
                 }
             }
 
@@ -368,7 +370,7 @@
                 {
                     if (num == 1)
                     {
-                        if (player.Gold >= 500)
+                        if (player.Gold >= 500) // 플레이어의 골드가 500 이상인지 확인
                         {
                             if (player.Health < 100)
                             {
@@ -376,7 +378,7 @@
                                 player.Health = 100;
                                 Console.WriteLine("체력을 회복했습니다.");
                             }
-                            else
+                            else // 체력이 100이면 휴식할 수 없음
                             {
                                 Console.WriteLine("이미 체력이 100입니다.");
                             }
@@ -397,12 +399,12 @@
         }
 
 
-        //던전 입장
+        //던전 입장 (반복되는 로직을 정리하려고 도전했으나 오류가 떠서 실패했습니다ㅜㅜ )
         static void Dungeon(Character player)
         {
             bool dungeonSelect = false;
             Random random = new Random();
-            int successcount = 0;
+            int successcount = 0; // 던전 성공 횟수 
             while (!dungeonSelect)
             {
                 Console.WriteLine("\n0. 나가기 \n1. Easy | 방어력 5 이상 권장\n2. Normal | 방어력 20 이상 권장\n3. Hard | 방어력 35 이상 권장 ");
@@ -582,12 +584,14 @@
             if (player.Health <= 0)
             {
                 Console.Clear();
-                Console.WriteLine("사망");
+                Console.WriteLine($"{player.Name}께서는 사망하셨습니다.");
+                Console.WriteLine("- Game Over -");
                 Environment.Exit(0); 
             }
         }
 
 
+        // 레벨업 기능
         static void LevelUP(Character player, int successcount)
         {
             switch(successcount)
